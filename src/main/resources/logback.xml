@@ -24,7 +24,7 @@
 		</layout>
 
 		<!-- RabbitMQ connection -->
-		<host>192.168.99.100</host>
+		<host>0.0.0.0</host>
 		<port>30000</port>
 		<username>guest</username>
 		<password>guest</password>
