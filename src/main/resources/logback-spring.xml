@@ -27,8 +27,6 @@
 
 		<!-- RabbitMQ connection -->
 		<addresses>${destination}</addresses>
-<!--		<host>localhost</host>-->
-<!--		<port>30000</port>-->
 		<username>guest</username>
 		<password>guest</password>
 		
