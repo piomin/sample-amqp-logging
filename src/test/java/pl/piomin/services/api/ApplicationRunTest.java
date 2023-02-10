@@ -46,9 +46,9 @@ public class ApplicationRunTest {
     RabbitTemplate rabbitTemplate;
 
     @Container
-    static final GenericContainer rabbitmq = new FixedHostPortGenericContainer<>("rabbitmq:3-management")
+    static final GenericContainer rabbitmq = new FixedHostPortGenericContainer<>("rabbitmq:3")
             .withFixedExposedPort(5672, 5672)
-            .withExposedPorts(5672, 15672);
+            .withExposedPorts(5672);
 
     @DynamicPropertySource
     static void rabbitProperties(DynamicPropertyRegistry registry) {
