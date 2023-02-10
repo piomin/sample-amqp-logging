@@ -10,10 +10,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,7 +36,7 @@ public class ApplicationRunTest {
 
         @Bean
         Binding binding(Queue queue, TopicExchange exchange) {
-            return BindingBuilder.bind(queue).to(exchange).with("api-service-4");
+            return BindingBuilder.bind(queue).to(exchange).with("#");
         }
     }
 
@@ -46,21 +46,37 @@ public class ApplicationRunTest {
     RabbitTemplate rabbitTemplate;
 
     @Container
-    static final RabbitMQContainer rabbitmq = new RabbitMQContainer("rabbitmq:latest")
-            .withExposedPorts(5672);
+    static final GenericContainer rabbitmq = new FixedHostPortGenericContainer<>("rabbitmq:3-management")
+            .withFixedExposedPort(5672, 5672)
+            .withExposedPorts(5672, 15672);
 
     @DynamicPropertySource
     static void rabbitProperties(DynamicPropertyRegistry registry) {
-        registry.add("app.amqp.url", rabbitmq::getAmqpUrl);
+        registry.add("app.amqp.url", () -> "localhost:5672");
     }
 
+
     @Test
-    public void start() {
+    public void start() throws InterruptedException {
+        rabbitTemplate.start();
+        restTemplate.getForObject("/hello/{param}", String.class, "123");
+        rabbitTemplate.receive("ex_logstash", 3000);
+        Thread.sleep(3000);
+
+        for (int i = 0; i < 10; i++) {
+            sendLogAndReceiveMessage();
+        }
+
+    }
+
+
+    private void sendLogAndReceiveMessage() {
+
         String res = restTemplate.getForObject("/hello/{param}", String.class, "123");
         assertNotNull(res);
         assertEquals("Hello", res);
 
-//        Message msg = rabbitTemplate.receive("ex_logstash");
-//        System.out.println("MSG: " + msg);
+        Message msg = rabbitTemplate.receive("ex_logstash", 3000);
+        assertNotNull(msg);
     }
 }

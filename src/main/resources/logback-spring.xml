@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<springProperty name="destination" source="app.amqp.url"/>
+	<springProperty name="destination" source="app.amqp.url" scope="context" />
 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -31,9 +31,9 @@
 		<password>guest</password>
 		
 		<applicationId>api-service-4</applicationId>
-		<routingKeyPattern>api-service-4</routingKeyPattern>
+		<routingKeyPattern>logs</routingKeyPattern>
 		<declareExchange>true</declareExchange>
-		<exchangeType>direct</exchangeType>
+<!--		<exchangeType>direct</exchangeType>-->
 		<exchangeName>ex_logstash</exchangeName>
 
 		<generateId>true</generateId>
