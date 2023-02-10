@@ -1,19 +1,18 @@
 version: 2.1
 
 executors:
-  jdk:
-    docker:
-      - image: 'cimg/openjdk:8.0'
+  linux:
+    machine:
+      image: ubuntu-2204:2022.04.2
+    environment:
+      architecture: "amd64"
+      platform: "linux/amd64"
 
 orbs:
   maven: circleci/maven@1.4.0
-#  tcc: atomicjar/testcontainers-cloud-orb@0.1.0
 
 workflows:
   maven_test:
     jobs:
       - maven/test:
-          executor: jdk
-#          context: Testcontainers
-#          pre-steps:
-#            - tcc/setup
+          executor: linux
