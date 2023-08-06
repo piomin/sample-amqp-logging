@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Controller {
 
-	protected Logger logger = LoggerFactory.getLogger(Controller.class.getName());
+    protected Logger logger = LoggerFactory.getLogger(Controller.class.getName());
 
-	@RequestMapping("/hello/{param}")
-	public String hello(@PathVariable("param") String param) {
-		logger.info("Controller.hello(" + param + ")");
-		return "Hello";
-	}
+    @RequestMapping("/hello/{param}")
+    public String hello(@PathVariable("param") String param) {
+        logger.info("Controller.hello(" + param + ")");
+        return "Hello";
+    }
 
 }
